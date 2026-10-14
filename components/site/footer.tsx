@@ -273,7 +273,7 @@ export function SiteFooter() {
 
   return (
     <>
-      <footer className="relative overflow-hidden border-t border-line-subtle bg-surface text-content transition-colors duration-300">
+      <footer className="relative overflow-hidden border-t border-border/80 dark:border-line-subtle bg-gradient-to-b from-surface via-surface-secondary/20 to-surface-secondary/40 dark:from-surface dark:via-surface dark:to-surface text-content transition-colors duration-300">
         {/* Animated Background Canvas (Homage to homepage 3D node network) */}
         <FooterNetworkAnimation />
 
@@ -287,22 +287,22 @@ export function SiteFooter() {
         {/* Main Footer Wrapper */}
         <div className="relative z-10 mx-auto max-w-7xl px-6 pt-12 pb-16 lg:px-10">
           {/* Top Telemetry & Status Bar */}
-          <div className="mb-10 flex flex-col gap-4 rounded-2xl border border-line-subtle bg-surface-secondary/60 p-4 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between shadow-sm">
+          <div className="mb-10 flex flex-col gap-4 rounded-2xl border border-border/80 dark:border-line-subtle bg-surface-secondary/80 dark:bg-surface-secondary/60 p-4 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between shadow-sm">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              <span className="flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
                 SYSTEM STATUS: ACTIVE · SERVING US &amp; GLOBAL
               </span>
-              <span className="text-xs text-content-faint hidden md:inline">
+              <span className="text-xs font-semibold text-content-secondary dark:text-content-faint hidden md:inline tracking-wide">
                 WYOMING · WASHINGTON · NEW DELHI
               </span>
             </div>
 
-            <div className="flex items-center gap-4 text-xs text-content-muted">
+            <div className="flex items-center gap-4 text-xs font-medium text-content-secondary dark:text-content-muted">
               <span>Ready to transform your business?</span>
               <Link
                 href="/contact"
-                className="group inline-flex items-center gap-1.5 font-semibold text-crimson transition-colors hover:text-crimson-bright"
+                className="group inline-flex items-center gap-1.5 font-bold text-crimson transition-colors hover:text-crimson-bright"
               >
                 <span>Start a project</span>
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -313,7 +313,7 @@ export function SiteFooter() {
           {/* Bento-Style 4-Column Layout */}
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-12">
             {/* Box 1: Brand & Social Dock (Only LinkedIn, Facebook, Instagram) */}
-            <div className="lg:col-span-4 flex flex-col justify-between rounded-2xl border border-line-subtle bg-surface/80 p-6 shadow-sm backdrop-blur-md">
+            <div className="lg:col-span-4 flex flex-col justify-between rounded-2xl border border-border/80 dark:border-line-subtle bg-surface/95 dark:bg-surface/80 p-6 shadow-md dark:shadow-sm backdrop-blur-md">
               <div>
                 <Link
                   href="/"
@@ -324,11 +324,11 @@ export function SiteFooter() {
                   <Logo size="md" showEmblem={false} />
                 </Link>
 
-                <p className="mt-4 text-sm leading-relaxed text-content-muted">
+                <p className="mt-4 text-sm leading-relaxed font-medium text-content-secondary dark:text-content-muted">
                   Revamp your online presence with bespoke designs crafted for your business success.
                 </p>
 
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-line-subtle bg-surface-secondary px-3 py-1 text-[11px] text-content-faint">
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border dark:border-line-subtle bg-surface-secondary/90 px-3 py-1 text-[11px] font-medium text-content-secondary dark:text-content-faint">
                   <span className="h-1.5 w-1.5 rounded-full bg-crimson" />
                   <span>Custom Engineering · AI Automation · High-Conversion Web</span>
                 </div>
@@ -336,7 +336,7 @@ export function SiteFooter() {
 
               {/* Social Dock (Only LinkedIn, Facebook, Instagram) */}
               <div className="mt-8">
-                <p className="text-xs font-semibold uppercase tracking-wider text-content-faint mb-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-content dark:text-content-faint mb-3">
                   Connect With Us
                 </p>
                 <div className="flex flex-wrap items-center gap-2.5">
@@ -349,7 +349,7 @@ export function SiteFooter() {
                     className="group relative flex h-11 items-center gap-2.5 rounded-xl border border-crimson/40 bg-crimson/10 px-4 text-crimson transition-all duration-300 hover:-translate-y-1 hover:bg-crimson hover:text-white hover:shadow-lg hover:shadow-crimson/30 active:scale-95"
                   >
                     <Linkedin className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
-                    <span className="text-xs font-semibold">LinkedIn</span>
+                    <span className="text-xs font-bold">LinkedIn</span>
                     <span className="relative flex h-2 w-2">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-crimson opacity-75 group-hover:bg-white" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-crimson group-hover:bg-white" />
@@ -361,7 +361,7 @@ export function SiteFooter() {
                     type="button"
                     aria-label="Facebook (Launching Soon)"
                     onClick={() => handleNonWorkingSocialClick('Facebook')}
-                    className={`group flex h-11 w-11 items-center justify-center rounded-xl border border-line-subtle bg-surface-secondary text-content-muted transition-all duration-300 hover:-translate-y-1 hover:border-crimson hover:bg-crimson/10 hover:text-crimson hover:shadow-md active:scale-90 ${
+                    className={`group flex h-11 w-11 items-center justify-center rounded-xl border border-border/80 dark:border-line-subtle bg-surface-secondary text-content-secondary transition-all duration-300 hover:-translate-y-1 hover:border-crimson hover:bg-crimson/10 hover:text-crimson hover:shadow-md active:scale-90 dark:text-content-muted ${
                       clickedIcon === 'Facebook' ? 'scale-125 ring-2 ring-crimson' : ''
                     }`}
                   >
@@ -373,7 +373,7 @@ export function SiteFooter() {
                     type="button"
                     aria-label="Instagram (Launching Soon)"
                     onClick={() => handleNonWorkingSocialClick('Instagram')}
-                    className={`group flex h-11 w-11 items-center justify-center rounded-xl border border-line-subtle bg-surface-secondary text-content-muted transition-all duration-300 hover:-translate-y-1 hover:border-crimson hover:bg-crimson/10 hover:text-crimson hover:shadow-md active:scale-90 ${
+                    className={`group flex h-11 w-11 items-center justify-center rounded-xl border border-border/80 dark:border-line-subtle bg-surface-secondary text-content-secondary transition-all duration-300 hover:-translate-y-1 hover:border-crimson hover:bg-crimson/10 hover:text-crimson hover:shadow-md active:scale-90 dark:text-content-muted ${
                       clickedIcon === 'Instagram' ? 'scale-125 ring-2 ring-crimson' : ''
                     }`}
                   >
@@ -403,34 +403,34 @@ export function SiteFooter() {
             </div>
 
             {/* Box 2: Operations & Direct Contact (Span 3) */}
-            <div className="lg:col-span-3 rounded-2xl border border-line-subtle bg-surface/80 p-6 shadow-sm backdrop-blur-md">
+            <div className="lg:col-span-3 rounded-2xl border border-border/80 dark:border-line-subtle bg-surface/95 dark:bg-surface/80 p-6 shadow-md dark:shadow-sm backdrop-blur-md">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-content-faint">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-content dark:text-content-faint">
                   Global Contact
                 </h3>
-                <span className="rounded-full bg-crimson/10 px-2.5 py-0.5 text-[10px] font-semibold text-crimson">
+                <span className="rounded-full bg-crimson/10 px-2.5 py-0.5 text-[10px] font-bold text-crimson">
                   US HQ
                 </span>
               </div>
 
-              <div className="space-y-4 text-sm text-content-muted">
+              <div className="space-y-4 text-sm text-content-secondary dark:text-content-muted">
                 {/* Registered Entity */}
                 <div className="flex items-start gap-3">
                   <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
                   <div>
-                    <p className="font-semibold text-content">Ethixweb USA LLC</p>
-                    <p className="text-xs text-content-muted">Registered in Wyoming, United States</p>
-                    <p className="text-xs text-content-muted">Serving Kent, WA &amp; North America</p>
+                    <p className="font-bold text-content text-sm sm:text-base">Ethixweb USA LLC</p>
+                    <p className="text-xs font-medium text-content-secondary dark:text-content-muted">Registered in Wyoming, United States</p>
+                    <p className="text-xs font-medium text-content-secondary dark:text-content-muted">Serving Kent, WA &amp; North America</p>
                   </div>
                 </div>
 
                 {/* Email with copy button */}
-                <div className="flex items-center justify-between rounded-xl border border-line-subtle bg-surface-secondary/70 p-2.5">
+                <div className="flex items-center justify-between rounded-xl border border-border/80 dark:border-line-subtle bg-surface-secondary/80 p-2.5">
                   <div className="flex items-center gap-2 text-content">
                     <Mail className="h-4 w-4 text-crimson shrink-0" />
                     <a
                       href="mailto:info@ethixweb.com"
-                      className="font-medium hover:text-crimson text-xs sm:text-sm"
+                      className="font-semibold hover:text-crimson text-xs sm:text-sm text-content"
                     >
                       info@ethixweb.com
                     </a>
@@ -439,7 +439,7 @@ export function SiteFooter() {
                     type="button"
                     onClick={copyEmail}
                     title="Copy email to clipboard"
-                    className="rounded p-1 text-content-faint hover:text-crimson transition-colors"
+                    className="rounded p-1 text-content-secondary hover:text-crimson transition-colors dark:text-content-faint"
                   >
                     {copiedEmail ? (
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
@@ -452,16 +452,16 @@ export function SiteFooter() {
                 {/* Hours */}
                 <div className="flex items-center gap-3">
                   <Clock className="h-4 w-4 shrink-0 text-crimson" />
-                  <span>Mon-Fri · 9:00 AM – 5:00 PM</span>
+                  <span className="font-medium text-content-secondary dark:text-content-muted">Mon-Fri · 9:00 AM – 5:00 PM</span>
                 </div>
 
                 {/* India Center Badge */}
-                <div className="pt-2 border-t border-line-subtle/50">
-                  <div className="flex items-start gap-2.5 text-xs text-content-faint">
+                <div className="pt-2 border-t border-border/60 dark:border-line-subtle/50">
+                  <div className="flex items-start gap-2.5 text-xs text-content-secondary dark:text-content-faint">
                     <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
                     <div>
-                      <p className="font-medium text-content-muted">Global Delivery Hub</p>
-                      <p className="text-[11px]">Engineering &amp; Support · New Delhi, India</p>
+                      <p className="font-bold text-content dark:text-content-muted">Global Delivery Hub</p>
+                      <p className="text-[11px] font-medium text-content-secondary dark:text-content-faint">Engineering &amp; Support · New Delhi, India</p>
                     </div>
                   </div>
                 </div>
@@ -469,15 +469,15 @@ export function SiteFooter() {
             </div>
 
             {/* Box 3: Company Navigation (Span 2) */}
-            <div className="lg:col-span-2 rounded-2xl border border-line-subtle bg-surface/80 p-6 shadow-sm backdrop-blur-md">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-content-faint mb-4">
+            <div className="lg:col-span-2 rounded-2xl border border-border/80 dark:border-line-subtle bg-surface/95 dark:bg-surface/80 p-6 shadow-md dark:shadow-sm backdrop-blur-md">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-content dark:text-content-faint mb-4">
                 Company
               </h3>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link
                     href="/about"
-                    className="group inline-flex items-center text-content-muted transition-colors hover:text-crimson"
+                    className="group inline-flex items-center font-medium text-content-secondary transition-colors hover:text-crimson dark:text-content-muted dark:hover:text-crimson"
                   >
                     <span className="transition-transform group-hover:translate-x-1">About Us</span>
                   </Link>
@@ -485,7 +485,7 @@ export function SiteFooter() {
                 <li>
                   <Link
                     href="/industries"
-                    className="group inline-flex items-center text-content-muted transition-colors hover:text-crimson"
+                    className="group inline-flex items-center font-medium text-content-secondary transition-colors hover:text-crimson dark:text-content-muted dark:hover:text-crimson"
                   >
                     <span className="transition-transform group-hover:translate-x-1">Industries</span>
                   </Link>
@@ -493,7 +493,7 @@ export function SiteFooter() {
                 <li>
                   <Link
                     href="/our-work"
-                    className="group inline-flex items-center text-content-muted transition-colors hover:text-crimson"
+                    className="group inline-flex items-center font-medium text-content-secondary transition-colors hover:text-crimson dark:text-content-muted dark:hover:text-crimson"
                   >
                     <span className="transition-transform group-hover:translate-x-1">Our Work</span>
                   </Link>
@@ -501,7 +501,7 @@ export function SiteFooter() {
                 <li>
                   <Link
                     href="/blog"
-                    className="group inline-flex items-center text-content-muted transition-colors hover:text-crimson"
+                    className="group inline-flex items-center font-medium text-content-secondary transition-colors hover:text-crimson dark:text-content-muted dark:hover:text-crimson"
                   >
                     <span className="transition-transform group-hover:translate-x-1">Blog</span>
                   </Link>
@@ -509,15 +509,15 @@ export function SiteFooter() {
                 <li>
                   <Link
                     href="/contact"
-                    className="group inline-flex items-center text-content-muted transition-colors hover:text-crimson"
+                    className="group inline-flex items-center font-medium text-content-secondary transition-colors hover:text-crimson dark:text-content-muted dark:hover:text-crimson"
                   >
                     <span className="transition-transform group-hover:translate-x-1">Contact</span>
                   </Link>
                 </li>
-                <li className="pt-2 border-t border-line-subtle/50">
+                <li className="pt-2 border-t border-border/60 dark:border-line-subtle/50">
                   <Link
                     href="/admin/login"
-                    className="group inline-flex items-center text-xs text-content-faint transition-colors hover:text-crimson"
+                    className="group inline-flex items-center text-xs font-semibold text-content-muted transition-colors hover:text-crimson dark:text-content-faint"
                   >
                     <span className="transition-transform group-hover:translate-x-1">Admin Portal</span>
                   </Link>
@@ -526,15 +526,15 @@ export function SiteFooter() {
             </div>
 
             {/* Box 4: Governance & Useful Links with Instant Modal (Span 3) */}
-            <div className="lg:col-span-3 rounded-2xl border border-line-subtle bg-surface/80 p-6 shadow-sm backdrop-blur-md">
+            <div className="lg:col-span-3 rounded-2xl border border-border/80 dark:border-line-subtle bg-surface/95 dark:bg-surface/80 p-6 shadow-md dark:shadow-sm backdrop-blur-md">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-content-faint">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-content dark:text-content-faint">
                   Useful Links
                 </h3>
                 <ShieldCheck className="h-4 w-4 text-crimson" />
               </div>
 
-              <p className="text-xs text-content-muted mb-4">
+              <p className="text-xs font-medium text-content-secondary dark:text-content-muted mb-4">
                 Enterprise-grade transparency, contracts, and legal documentation:
               </p>
 
@@ -542,46 +542,46 @@ export function SiteFooter() {
                 <button
                   type="button"
                   onClick={() => setActiveModal('refunds')}
-                  className="w-full flex items-center justify-between rounded-xl border border-line-subtle bg-surface-secondary/70 p-2.5 text-xs font-medium text-content transition-all hover:border-crimson hover:text-crimson hover:bg-crimson/5 text-left"
+                  className="w-full flex items-center justify-between rounded-xl border border-border/80 dark:border-line-subtle bg-surface-secondary/80 p-2.5 text-xs font-semibold text-content transition-all hover:border-crimson hover:text-crimson hover:bg-crimson/5 text-left"
                 >
                   <span className="flex items-center gap-2">
                     <RotateCcw className="h-3.5 w-3.5 text-crimson" />
                     <span>Cancellation &amp; Refunds</span>
                   </span>
-                  <ArrowUpRight className="h-3 w-3 text-content-faint" />
+                  <ArrowUpRight className="h-3.5 w-3.5 text-content-secondary dark:text-content-faint" />
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveModal('terms')}
-                  className="w-full flex items-center justify-between rounded-xl border border-line-subtle bg-surface-secondary/70 p-2.5 text-xs font-medium text-content transition-all hover:border-crimson hover:text-crimson hover:bg-crimson/5 text-left"
+                  className="w-full flex items-center justify-between rounded-xl border border-border/80 dark:border-line-subtle bg-surface-secondary/80 p-2.5 text-xs font-semibold text-content transition-all hover:border-crimson hover:text-crimson hover:bg-crimson/5 text-left"
                 >
                   <span className="flex items-center gap-2">
                     <FileText className="h-3.5 w-3.5 text-crimson" />
                     <span>Terms &amp; Conditions</span>
                   </span>
-                  <ArrowUpRight className="h-3 w-3 text-content-faint" />
+                  <ArrowUpRight className="h-3.5 w-3.5 text-content-secondary dark:text-content-faint" />
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveModal('privacy')}
-                  className="w-full flex items-center justify-between rounded-xl border border-line-subtle bg-surface-secondary/70 p-2.5 text-xs font-medium text-content transition-all hover:border-crimson hover:text-crimson hover:bg-crimson/5 text-left"
+                  className="w-full flex items-center justify-between rounded-xl border border-border/80 dark:border-line-subtle bg-surface-secondary/80 p-2.5 text-xs font-semibold text-content transition-all hover:border-crimson hover:text-crimson hover:bg-crimson/5 text-left"
                 >
                   <span className="flex items-center gap-2">
                     <ShieldCheck className="h-3.5 w-3.5 text-crimson" />
                     <span>Privacy Policy</span>
                   </span>
-                  <ArrowUpRight className="h-3 w-3 text-content-faint" />
+                  <ArrowUpRight className="h-3.5 w-3.5 text-content-secondary dark:text-content-faint" />
                 </button>
               </div>
 
-              <div className="mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-2.5 text-[11px] text-emerald-800 dark:text-emerald-300">
-                <p className="font-semibold flex items-center gap-1.5">
+              <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2.5 text-[11px] text-emerald-950 dark:text-emerald-300">
+                <p className="font-bold flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   <span>100% Milestone Satisfaction</span>
                 </p>
-                <p className="text-[10px] text-content-muted mt-0.5">
+                <p className="text-[10px] text-content-secondary dark:text-content-muted font-medium mt-0.5">
                   Transparent milestone payments &amp; code ownership.
                 </p>
               </div>
@@ -589,10 +589,10 @@ export function SiteFooter() {
           </div>
 
           {/* Bottom Bar: Copyright, Legal & Back-to-Top */}
-          <div className="mt-12 flex flex-col items-start justify-between gap-6 border-t border-line-subtle pt-8 text-xs text-content-faint sm:flex-row sm:items-center">
+          <div className="mt-12 flex flex-col items-start justify-between gap-6 border-t border-border/80 dark:border-line-subtle pt-8 text-xs text-content-secondary dark:text-content-faint sm:flex-row sm:items-center">
             <div>
-              <p>© {new Date().getFullYear()} Ethixweb. All rights reserved.</p>
-              <p className="mt-1 text-[11px] text-content-faint/80">
+              <p className="font-semibold text-content dark:text-content-faint">© {new Date().getFullYear()} Ethixweb. All rights reserved.</p>
+              <p className="mt-1 text-[11px] font-medium text-content-secondary dark:text-content-faint/80">
                 Ethixweb USA LLC | Registered in Wyoming, United States · Global Delivery in India
               </p>
             </div>
@@ -601,7 +601,7 @@ export function SiteFooter() {
               {/* Book an appointment */}
               <Link
                 href="/contact"
-                className="group inline-flex items-center gap-1.5 font-medium text-content transition-colors duration-200 hover:text-crimson"
+                className="group inline-flex items-center gap-1.5 font-semibold text-content transition-colors duration-200 hover:text-crimson"
               >
                 <span>Book an appointment</span>
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -611,7 +611,7 @@ export function SiteFooter() {
               <button
                 type="button"
                 onClick={handleScrollToTop}
-                className="group inline-flex items-center gap-1.5 rounded-full border border-line-subtle bg-surface-secondary px-4 py-2 text-xs font-semibold text-content transition-all duration-300 hover:border-crimson hover:bg-crimson hover:text-white hover:shadow-lg hover:shadow-crimson/25 active:scale-95"
+                className="group inline-flex items-center gap-1.5 rounded-full border border-border/80 dark:border-line-subtle bg-surface-secondary px-4 py-2 text-xs font-bold text-content transition-all duration-300 hover:border-crimson hover:bg-crimson hover:text-white hover:shadow-lg hover:shadow-crimson/25 active:scale-95 shadow-sm"
               >
                 <span>Back to top</span>
                 <ArrowUp className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5" />
