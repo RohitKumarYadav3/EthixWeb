@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/site/theme-provider';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://ethixweb.com'),
   title: {
-    default: 'Ethixweb India — Web Design, SEO & Digital Growth for Indian Businesses',
+    default: 'Ethixweb - We run the tech. You run the business.',
     template: '%s | Ethixweb India',
   },
   description:
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
     'CRM integration',
     'Ethixweb',
   ],
-  authors: [{ name: 'Ethixweb India' }],
-  creator: 'Ethixweb India',
+  authors: [{ name: 'Ethixweb' }],
+  creator: 'Ethixweb',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
@@ -30,16 +30,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    title: 'Ethixweb India — Web Design, SEO & Digital Growth for Indian Businesses',
+    title: 'Ethixweb — Web Design, SEO & Digital Growth for Indian Businesses',
     description:
       'Fast, conversion-focused websites and digital systems for Indian businesses. Web design, SEO, AI automation, WhatsApp workflows, and more.',
-    siteName: 'Ethixweb India',
+    siteName: 'Ethixweb',
     images: [
       {
         url: '/ethixweb-og.png',
         width: 422,
         height: 63,
-        alt: 'Ethixweb India',
+        alt: 'Ethixweb',
       },
     ],
   },
