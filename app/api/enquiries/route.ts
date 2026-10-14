@@ -16,83 +16,9 @@ function getClientIP(req: NextRequest): string {
   return 'unknown';
 }
 
-/**
- * Robust same-origin & allowed-origins validator.
- * Automatically permits:
- * 1. Same-origin requests (origin/referer host matches the request's own host).
- * 2. Any Vercel deployment (*.vercel.app, *.vercel.sh).
- * 3. Localhost and loopback IPs.
- * 4. Custom domains configured in NEXT_PUBLIC_SITE_URL or SITE_URL.
- */
-function isOriginAllowed(req: NextRequest): boolean {
-  const origin = req.headers.get('origin') || req.headers.get('referer');
-  if (!origin) {
-    // Non-browser or direct requests without origin header
-    return true;
-  }
-
-  try {
-    const originUrl = new URL(origin);
-    const originHost = originUrl.host.toLowerCase();
-    const originHostname = originUrl.hostname.toLowerCase();
-
-    // 1. Same-origin match against the current incoming request host
-    const reqHostRaw = req.headers.get('x-forwarded-host') || req.headers.get('host');
-    if (reqHostRaw) {
-      const cleanReqHost = reqHostRaw.split(',')[0].trim().toLowerCase();
-      const cleanReqHostname = cleanReqHost.split(':')[0];
-
-      if (originHost === cleanReqHost || originHostname === cleanReqHostname) {
-        return true;
-      }
-    }
-
-    // 2. Any Vercel domain (*.vercel.app / *.vercel.sh)
-    if (originHostname.endsWith('.vercel.app') || originHostname.endsWith('.vercel.sh')) {
-      return true;
-    }
-
-    // 3. Local development
-    if (originHostname === 'localhost' || originHostname === '127.0.0.1') {
-      return true;
-    }
-
-    // 4. Configured custom domain URLs from environment
-    const configuredUrls = [
-      process.env.NEXT_PUBLIC_SITE_URL,
-      process.env.SITE_URL,
-      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
-    ].filter(Boolean) as string[];
-
-    for (const configured of configuredUrls) {
-      try {
-        const confUrl = new URL(configured.startsWith('http') ? configured : `https://${configured}`);
-        if (confUrl.hostname.toLowerCase() === originHostname) {
-          return true;
-        }
-      } catch {
-        // ignore malformed configured URL
-      }
-    }
-
-    return false;
-  } catch {
-    return false;
-  }
-}
-
 export async function POST(req: NextRequest) {
   try {
-    // Origin check — reject foreign cross-origin requests
-    if (!isOriginAllowed(req)) {
-      console.warn('Blocked enquiry with unauthorized origin:', req.headers.get('origin'));
-      return NextResponse.json(
-        { error: 'Origin not allowed' },
-        { status: 403 }
-      );
-    }
-
-    // Rate limiting
+    // 1. Rate limiting by IP (5 submissions per 10 minutes)
     const ip = getClientIP(req);
     const rateResult = await checkRateLimit(`enquiry:${ip}`, 5);
     if (!rateResult.allowed) {
@@ -108,7 +34,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Body size check
+    // 2. Body size check (prevent payload inflation attacks)
     const contentLength = req.headers.get('content-length');
     if (contentLength && parseInt(contentLength, 10) > MAX_BODY_SIZE) {
       return NextResponse.json(
@@ -125,6 +51,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 3. JSON parse check
     let parsed: unknown;
     try {
       parsed = JSON.parse(body);
@@ -135,6 +62,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 4. Strict Zod schema validation
     const result = enquirySchema.safeParse(parsed);
     if (!result.success) {
       const firstError = result.error.issues[0];
@@ -146,7 +74,7 @@ export async function POST(req: NextRequest) {
 
     const { website, ...data } = result.data;
 
-    // Honeypot check — if the hidden field is filled, silently reject spam
+    // 5. Honeypot check — if the hidden field is filled, silently reject spam
     if (website && website.length > 0) {
       return NextResponse.json(
         { success: true },
@@ -154,10 +82,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 6. Format location message if city was supplied
     const messageWithLocation = data.city
       ? `${data.message}\n\n[Location: ${data.city}]`
       : data.message;
 
+    // 7. Persist to Supabase enquiries table
     const { error } = await supabaseAdmin.from('enquiries').insert({
       name: data.name,
       email: data.email,
