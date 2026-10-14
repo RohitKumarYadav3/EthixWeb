@@ -16,40 +16,80 @@ function getClientIP(req: NextRequest): string {
   return 'unknown';
 }
 
-function getOrigin(req: NextRequest): string | null {
-  return req.headers.get('origin') || req.headers.get('referer') || null;
+/**
+ * Robust same-origin & allowed-origins validator.
+ * Automatically permits:
+ * 1. Same-origin requests (origin/referer host matches the request's own host).
+ * 2. Any Vercel deployment (*.vercel.app, *.vercel.sh).
+ * 3. Localhost and loopback IPs.
+ * 4. Custom domains configured in NEXT_PUBLIC_SITE_URL or SITE_URL.
+ */
+function isOriginAllowed(req: NextRequest): boolean {
+  const origin = req.headers.get('origin') || req.headers.get('referer');
+  if (!origin) {
+    // Non-browser or direct requests without origin header
+    return true;
+  }
+
+  try {
+    const originUrl = new URL(origin);
+    const originHost = originUrl.host.toLowerCase();
+    const originHostname = originUrl.hostname.toLowerCase();
+
+    // 1. Same-origin match against the current incoming request host
+    const reqHostRaw = req.headers.get('x-forwarded-host') || req.headers.get('host');
+    if (reqHostRaw) {
+      const cleanReqHost = reqHostRaw.split(',')[0].trim().toLowerCase();
+      const cleanReqHostname = cleanReqHost.split(':')[0];
+
+      if (originHost === cleanReqHost || originHostname === cleanReqHostname) {
+        return true;
+      }
+    }
+
+    // 2. Any Vercel domain (*.vercel.app / *.vercel.sh)
+    if (originHostname.endsWith('.vercel.app') || originHostname.endsWith('.vercel.sh')) {
+      return true;
+    }
+
+    // 3. Local development
+    if (originHostname === 'localhost' || originHostname === '127.0.0.1') {
+      return true;
+    }
+
+    // 4. Configured custom domain URLs from environment
+    const configuredUrls = [
+      process.env.NEXT_PUBLIC_SITE_URL,
+      process.env.SITE_URL,
+      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+    ].filter(Boolean) as string[];
+
+    for (const configured of configuredUrls) {
+      try {
+        const confUrl = new URL(configured.startsWith('http') ? configured : `https://${configured}`);
+        if (confUrl.hostname.toLowerCase() === originHostname) {
+          return true;
+        }
+      } catch {
+        // ignore malformed configured URL
+      }
+    }
+
+    return false;
+  } catch {
+    return false;
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    // Origin check — reject cross-origin requests
-    const origin = getOrigin(req);
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    const allowedOrigins: string[] = [
-      siteUrl,
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://127.0.0.1:3000',
-      'http://127.0.0.1:3001',
-    ].filter((v): v is string => Boolean(v));
-
-    const isLocalhost =
-      process.env.NODE_ENV !== 'production' &&
-      Boolean(
-        origin &&
-          (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:'))
+    // Origin check — reject foreign cross-origin requests
+    if (!isOriginAllowed(req)) {
+      console.warn('Blocked enquiry with unauthorized origin:', req.headers.get('origin'));
+      return NextResponse.json(
+        { error: 'Origin not allowed' },
+        { status: 403 }
       );
-
-    if (origin && !isLocalhost && allowedOrigins.length > 0) {
-      const isAllowed = allowedOrigins.some((allowed) =>
-        origin.startsWith(allowed)
-      );
-      if (!isAllowed) {
-        return NextResponse.json(
-          { error: 'Origin not allowed' },
-          { status: 403 }
-        );
-      }
     }
 
     // Rate limiting
@@ -106,7 +146,7 @@ export async function POST(req: NextRequest) {
 
     const { website, ...data } = result.data;
 
-    // Honeypot check — if the hidden field is filled, silently reject
+    // Honeypot check — if the hidden field is filled, silently reject spam
     if (website && website.length > 0) {
       return NextResponse.json(
         { success: true },
@@ -130,7 +170,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (error) {
-      console.error('Enquiry insert error:', error.message);
+      console.error('Enquiry insert error:', error.message, error.details);
       return NextResponse.json(
         { error: 'Failed to submit enquiry. Please try again.' },
         { status: 500 }

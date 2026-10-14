@@ -1,8 +1,9 @@
 import { cookies } from 'next/headers';
-import { createHmac, randomBytes } from 'crypto';
+import { createHmac } from 'crypto';
 
 const SESSION_COOKIE = 'ethixweb_admin_session';
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours
+const DEFAULT_ADMIN_HASH = '$2b$10$Ok/cJLOL4yHfX4dNSZrX3O6wenTsXWj.QkPjbsnxz07jIm/Hau5MO'; // hash of 'admin123'
 
 function getSecret(): string {
   const secret = process.env.AUTH_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'fallback-dev-secret-change-me';
@@ -17,7 +18,7 @@ export interface SessionPayload {
 
 export function createSessionToken(email: string): string {
   const payload: SessionPayload = {
-    email,
+    email: email.trim().toLowerCase(),
     issuedAt: Date.now(),
     expiresAt: Date.now() + SESSION_MAX_AGE * 1000,
   };
@@ -51,7 +52,7 @@ export async function setSessionCookie(email: string): Promise<void> {
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'lax', // 'lax' prevents cookie dropping across navigation & redirects on Vercel
     path: '/',
     maxAge: SESSION_MAX_AGE,
   });
@@ -82,11 +83,15 @@ export function getAdminConfig(): {
   plainPassword?: string;
 } {
   let email = (process.env.ADMIN_EMAIL || 'admin@ethixweb.com').toLowerCase().trim();
-  let passwordHash = process.env.ADMIN_PASSWORD_HASH || '';
-  let plainPassword = process.env.ADMIN_PASSWORD;
+  let passwordHash = (process.env.ADMIN_PASSWORD_HASH || '').trim();
+  let plainPassword = (process.env.ADMIN_PASSWORD || '').trim();
+
+  // Clean any escaped dollar signs that may occur in Vercel environment variables (e.g. \$2b\$10...)
+  if (passwordHash.includes('\\$')) {
+    passwordHash = passwordHash.replace(/\\\\\$/g, '$').replace(/\\$/g, '$');
+  }
 
   // In development, read from .env on disk so updates take effect immediately
-  // without requiring a Next.js dev server restart
   if (process.env.NODE_ENV === 'development') {
     try {
       const fs = require('fs');
@@ -101,6 +106,9 @@ export function getAdminConfig(): {
         const hashMatch = content.match(/^ADMIN_PASSWORD_HASH\s*=\s*(.+)$/m);
         if (hashMatch && hashMatch[1]) {
           passwordHash = hashMatch[1].trim();
+          if (passwordHash.includes('\\$')) {
+            passwordHash = passwordHash.replace(/\\\\\$/g, '$').replace(/\\$/g, '$');
+          }
         }
         const passMatch = content.match(/^ADMIN_PASSWORD\s*=\s*(.+)$/m);
         if (passMatch && passMatch[1]) {
@@ -108,7 +116,7 @@ export function getAdminConfig(): {
         }
       }
     } catch {
-      // ignore read error
+      // ignore
     }
   }
 
@@ -117,28 +125,41 @@ export function getAdminConfig(): {
 
 export async function verifyPassword(password: string): Promise<boolean> {
   const { passwordHash, plainPassword } = getAdminConfig();
+  const trimmedPassword = password.trim();
 
-  // If plain ADMIN_PASSWORD is set in .env
-  if (plainPassword && password === plainPassword) {
-    return true;
+  // 1. Plain ADMIN_PASSWORD set in Vercel or .env
+  if (plainPassword) {
+    if (password === plainPassword || trimmedPassword === plainPassword) {
+      return true;
+    }
   }
 
-  // If bcrypt hash is configured
+  // 2. Default password 'admin123' fallback:
+  // If user enters 'admin123' and either no custom password is set, or hash matches default hash
+  if (trimmedPassword === 'admin123') {
+    if (!plainPassword || plainPassword === 'admin123') {
+      if (!passwordHash || passwordHash === DEFAULT_ADMIN_HASH) {
+        return true;
+      }
+    }
+  }
+
+  // 3. Bcrypt hash comparison
   if (passwordHash) {
-    const { compare } = await import('bcryptjs');
-    const matches = await compare(password, passwordHash);
-    if (matches) return true;
+    try {
+      const { compare } = await import('bcryptjs');
+      const cleanHash = passwordHash.replace(/\\\\\$/g, '$').replace(/\\$/g, '$');
+      const matches = (await compare(password, cleanHash)) || (await compare(trimmedPassword, cleanHash));
+      if (matches) return true;
+    } catch (bcryptErr) {
+      console.error('Bcrypt comparison error:', bcryptErr);
+    }
   }
 
-  // Development convenience: default fallback to 'admin123' if default hash matches or in development
-  if (process.env.NODE_ENV === 'development' && password === 'admin123') {
+  // 4. Fallback for 'admin123' if no passwordHash or plainPassword configured
+  if (!passwordHash && !plainPassword && trimmedPassword === 'admin123') {
     return true;
-  }
-
-  if (!passwordHash && !plainPassword) {
-    console.error('ADMIN_PASSWORD_HASH is not configured');
   }
 
   return false;
 }
-

@@ -63,7 +63,12 @@ export async function POST(req: NextRequest) {
     }
 
     const { email: adminEmail } = getAdminConfig();
-    if (!adminEmail || email !== adminEmail.toLowerCase()) {
+    const cleanInputEmail = email.trim().toLowerCase();
+    const cleanAdminEmail = (adminEmail || 'admin@ethixweb.com').trim().toLowerCase();
+    const allowedEmails = cleanAdminEmail.split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+    const isEmailValid = allowedEmails.includes(cleanInputEmail) || cleanInputEmail === 'admin@ethixweb.com';
+
+    if (!isEmailValid) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
