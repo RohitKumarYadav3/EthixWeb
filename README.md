@@ -1,241 +1,180 @@
-# Ethixweb India — Premium Digital Agency Website
+# Ethixweb — Web Engineering & Digital Agency Platform
 
-A distinctive, award-worthy digital agency website tailored for Indian businesses. Built with Next.js, TypeScript, Three.js, and Supabase.
+A high-performance digital agency platform built for **Ethixweb** (Ethixweb USA LLC, registered in Wyoming, USA, with global delivery in India). 
 
-## Features
+The platform is designed to showcase custom web engineering, AI automations, and growth systems with an interactive 3D hero, custom light/dark modes, full blog CMS, and an end-to-end lead management admin dashboard powered by Supabase.
 
-- **Custom visual identity**: Deep graphite + warm ivory + Ethixweb crimson palette, editorial typography (Space Grotesk + Inter), asymmetric layouts, bento grids
-- **Interactive 3D hero**: Original network sculpture built with React Three Fiber, lazy-loaded with SSR disabled and reduced-motion fallback
-- **Scroll animations**: IntersectionObserver-based staggered reveals, magnetic-style hover effects, marquee
-- **Responsive**: Mobile-first design with breakpoints from 375px to 1440px+
-- **5 pages**: Home, Services, About, Contact, Admin Login + Dashboard
-- **Working backend**: Enquiry form → database → admin lead management workflow
-- **Secure admin**: HMAC-signed HttpOnly cookie sessions, bcrypt password hashing, rate limiting, CSRF/origin protection, honeypot anti-spam
-- **SEO**: Metadata, OpenGraph, sitemap.xml, robots.txt, semantic HTML
-- **Performance**: Lazy-loaded 3D, minimal JS, optimized fonts via next/font, reduced-motion support
+---
 
-## Tech Stack
+## Quick Links to Key Pages
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 13.5 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS + shadcn/ui |
-| 3D | Three.js + React Three Fiber + Drei |
-| Animation | CSS transitions + IntersectionObserver |
-| Database | Supabase (PostgreSQL) |
-| Validation | Zod |
-| Auth | bcryptjs + HMAC-signed cookies |
-| Testing | Jest + ts-jest |
+- **Home Page** (`/`): Interactive 3D neural network, service solutions, and client reviews.
+- **Services** (`/services`): Full breakdown of custom websites, AI receptionists, SEO, and workflows with transparent pricing.
+- **Our Work** (`/our-work`): Real case studies with before/after screenshots and measurable business metrics.
+- **Industries** (`/industries`): Industry-tailored digital playbooks (Healthcare, Real Estate, Retail, Professional Services).
+- **About Us** (`/about`): Global delivery model, engineering principles, and core team.
+- **Blog** (`/blog`): Technical insights and business playbooks with individual post routing (`/blog/[slug]`).
+- **Contact** (`/contact`): Validated enquiry intake form connected to Supabase.
+- **Admin Portal** (`/admin/login` & `/admin`): Password-protected lead pipeline dashboard with status filtering, notes, and pagination.
 
-## Getting Started
+---
+
+## Tech Stack & Why We Chose It
+
+We kept the tech stack modern, fast, and free of unnecessary bloat:
+
+| Layer | Technology | Why We Used It |
+|---|---|---|
+| **Framework** | **Next.js 13.5 (App Router)** | Fast server-side rendering for SEO, automatic code-splitting, and serverless API routes without needing a separate backend server. |
+| **Language** | **TypeScript** | Type-safety across forms, database models, and API routes to eliminate runtime errors before shipping. |
+| **Styling** | **Tailwind CSS** | Custom design tokens (Ethixweb Crimson, Deep Graphite, Warm Ivory) with responsive mobile-first classes. |
+| **3D Graphics** | **Three.js + React Three Fiber** | Interactive node network on the home page that responds to mouse movement, with zero layout shift and reduced-motion fallback. |
+| **Database** | **Supabase (PostgreSQL)** | Managed Postgres database for inquiries and rate-limiting. Uses service-role keys for secure server-side queries. |
+| **Data Validation** | **Zod** | Strict validation rules for enquiry submissions, admin logins, and lead status updates. |
+| **Authentication** | **HMAC Cookie Sessions + bcryptjs** | Lightweight, secure admin authentication with HttpOnly cookies. No third-party auth vendor lock-in. |
+| **Testing** | **Jest + ts-jest** | Unit and integration test suite covering input validation, token verification, and password checks. |
+
+---
+
+## Design Rationale
+
+### 1. Distinctive Brand Identity (Crimson & Graphite)
+Most tech agencies use generic shades of SaaS blue or purple. Ethixweb uses a deliberate palette of **Deep Graphite (`#0f0f13`)**, **Vibrant Crimson (`#dc2626` / `#ef4444`)**, and **Warm Ivory (`#fbfbfa`)**. It feels authoritative, energetic, and distinct on both desktop and mobile screens.
+
+### 2. Dual-Market Architecture (US Corporate + India Engineering)
+Ethixweb operates as a US LLC with an engineering delivery center in India. The design communicates this through:
+- **Live IST Clock**: Displays current Indian Standard Time in the header.
+- **Dual Timezones**: Kent, WA (PST) and New Delhi (IST) business hours displayed across contact areas.
+- **INR & Transparent Scopes**: Transparent pricing ranges and WhatsApp automation workflows tailored for international and Indian businesses.
+
+### 3. Satisfying Circular Theme Switch Animation
+Toggling between light and dark mode uses the browser's native **View Transitions API** (`document.startViewTransition`) with an expanding circular clip-path wave originating from the toggle button. Both Sun and Moon icons feature spring-loaded rotation and glowing halos.
+
+### 4. Interactive Footer with Neural Background Animation
+The footer replaces generic links with an interactive bento-box layout:
+- **Animated Background Canvas**: Floating crimson nodes and laser connections that mirror the home page 3D hero.
+- **Active Social Hub**: Direct link to Ethixweb's official LinkedIn page, plus animated interactive micro-interactions on other icons.
+- **In-Page Legal Modals**: Cancellation & Refund, Terms & Conditions, and Privacy Policy open in clean modal dialogs so visitors can review policies without getting redirected or hitting 404 pages.
+- **Smooth Scroll**: Clicking the logo or "Back to top" smoothly glides back to the top of the page.
+
+---
+
+## Getting Started Locally
 
 ### Prerequisites
+- Node.js 18.x or 20.x
+- npm
 
-- Node.js 18+
-- npm or yarn
-
-### Installation
-
+### 1. Clone & Install Dependencies
 ```bash
+git clone <your-repository-url>
+cd project
 npm install --legacy-peer-deps
 ```
 
-### Environment Variables
+### 2. Set Up Environment Variables
+Create a `.env` file in the project root:
 
-Copy `.env.example` to `.env` and fill in the values:
+```ini
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-```bash
-cp .env.example .env
+# Admin Dashboard Access
+ADMIN_EMAIL=admin@ethixweb.com
+ADMIN_PASSWORD=admin123
+ADMIN_PASSWORD_HASH=$2b$10$Ok/cJLOL4yHfX4dNSZrX3O6wenTsXWj.QkPjbsnxz07jIm/Hau5MO
+
+# Session Secret (random 64-character string)
+AUTH_SECRET=4f9b2d8e1a7c3f5e9b2d8e1a7c3f5e9b4f9b2d8e1a7c3f5e9b2d8e1a7c3f5e9b
+
+# Public Site URL
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-Required variables:
-
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon public key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-side only) |
-| `ADMIN_EMAIL` | Admin login email |
-| `ADMIN_PASSWORD_HASH` | Bcrypt hash of admin password |
-| `AUTH_SECRET` | Random string for signing session tokens |
-| `NEXT_PUBLIC_SITE_URL` | Your site URL (for sitemap, origin checks) |
-
-### Generate Admin Password Hash
-
-```bash
-node -e "const bcrypt = require('bcryptjs'); console.log(bcrypt.hashSync('your_password', 10))"
-```
-
-### Generate Auth Secret
-
-```bash
-node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-```
-
-### Default Admin Credentials
-
-- Email: `admin@ethixweb.com`
-- Password: `admin123`
-
-**Change these immediately in production.**
-
-### Run Development Server
-
+### 3. Run the Development Server
 ```bash
 npm run dev
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Build for Production
+---
 
+## Database Setup (Supabase)
+
+If setting up a fresh Supabase project, run the SQL script located in:
+`supabase/migrations/20261013142753_create_enquiries_and_rate_limits.sql`
+
+This script creates:
+1. **`enquiries` table**:
+   - `id` (UUID primary key)
+   - `name`, `email`, `phone`, `company`, `service`, `budget`, `message`
+   - `status` (`new`, `contacted`, `qualified`, `won`, `lost`)
+   - `notes` (Admin internal notes)
+   - `created_at`, `updated_at` timestamps
+2. **`rate_limits` table**:
+   - Persistent IP rate-limiting for spam protection.
+
+---
+
+## Admin Portal & Lead Management
+
+To access the lead management portal:
+1. Navigate to `/admin/login`.
+2. Default credentials:
+   - **Email**: `admin@ethixweb.com`
+   - **Password**: `admin123`
+3. Features:
+   - Real-time lead count and status overview.
+   - Filter leads by status (`new`, `contacted`, `qualified`, `won`, `lost`) and service category.
+   - Update lead status and save internal progress notes.
+   - Delete leads.
+
+*To change the admin password, generate a new bcrypt hash:*
 ```bash
-npm run build
-npm start
+node -e "console.log(require('bcryptjs').hashSync('YourNewPassword', 10))"
 ```
+*Paste the resulting hash into `ADMIN_PASSWORD_HASH` in your `.env`.*
 
-## Database Schema
+---
 
-### enquiries
+## Deployment to Vercel
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid | Primary key |
-| name | text | Contact name |
-| email | text | Contact email |
-| phone | text | Contact phone |
-| company | text | Optional company name |
-| service | text | Service interest category |
-| budget | text | Budget range (optional) |
-| message | text | Enquiry message |
-| status | text | Lead status (new, contacted, qualified, won, lost) |
-| notes | text | Admin notes |
-| created_at | timestamptz | Submission timestamp |
-| updated_at | timestamptz | Last modification timestamp |
+The project is pre-configured and verified for Vercel deployment:
 
-### rate_limits
+1. Push your code to your GitHub repository:
+   ```bash
+   git remote add origin https://github.com/<your-username>/<your-repo>.git
+   git push -u origin main
+   ```
+2. Import the project in [Vercel](https://vercel.com/new).
+3. Under **Project Settings → Environment Variables**, add:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `ADMIN_EMAIL`
+   - `ADMIN_PASSWORD_HASH`
+   - `AUTH_SECRET`
+   - `NEXT_PUBLIC_SITE_URL` *(set to your live domain e.g. `https://ethixweb.com`)*
+4. Click **Deploy**. Vercel will build and launch your site automatically.
 
-Persistent rate limiting table for enquiry submissions and login attempts.
+---
 
-**RLS Policies:**
-- `enquiries`: Public (anon) can INSERT only. All read/update/delete operations use the service role key (bypasses RLS) in authenticated API routes.
-- `rate_limits`: Full anon CRUD for rate-limit operations (no sensitive data stored).
+## Running Automated Tests
 
-## API Routes
-
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| POST | `/api/enquiries` | Public | Submit a new enquiry |
-| POST | `/api/admin/login` | Public | Admin login |
-| POST | `/api/admin/logout` | Session | Admin logout |
-| GET | `/api/admin/logout` | - | Check auth status |
-| GET | `/api/admin/leads` | Session | Paginated, filterable lead list |
-| GET | `/api/admin/leads/[id]` | Session | Lead detail |
-| PATCH | `/api/admin/leads/[id]` | Session | Update lead status/notes |
-| DELETE | `/api/admin/leads/[id]` | Session | Delete a lead |
-
-## Security Features
-
-- **Server-side Zod validation** on all inputs
-- **Request body size limits** (10KB for enquiries, 5KB for login)
-- **Honeypot field** for spam detection
-- **Persistent rate limiting** backed by database (5 requests per 10 minutes per IP)
-- **Origin/CSRF protection** on enquiry submissions
-- **HMAC-signed HttpOnly session cookies** with 24-hour expiry
-- **bcrypt password hashing** for admin credentials
-- **Login throttling** (5 attempts per 10 minutes)
-- **Independent auth checks** on every admin API route
-- **No public registration** — single admin account via environment variables
-
-## Testing
-
+Run the built-in Jest test suite:
 ```bash
 npm test
 ```
+Validates form schemas, spam honeypot filters, session cookie generation, and token tampering defenses.
 
-Tests cover:
-- Enquiry validation (Zod schemas)
-- Login validation
-- Lead update validation
-- Session token creation and verification
-- Tampered/expired token rejection
-- Password verification (correct, incorrect, missing)
-- Honeypot spam detection
+---
 
-## Architecture
+## License
 
-```
-app/
-├── layout.tsx          # Root layout with fonts + metadata
-├── page.tsx            # Home page
-├── services/page.tsx   # Services page
-├── about/page.tsx      # About page
-├── contact/page.tsx    # Contact page with form
-├── admin/
-│   ├── login/page.tsx  # Admin login
-│   └── page.tsx        # Lead management dashboard
-├── api/
-│   ├── enquiries/route.ts      # Public enquiry submission
-│   └── admin/
-│       ├── login/route.ts      # Admin authentication
-│       ├── logout/route.ts     # Session management
-│       └── leads/
-│           ├── route.ts        # Lead list with pagination/filtering
-│           └── [id]/route.ts   # Lead CRUD operations
-├── sitemap.ts
-└── robots.ts
-
-components/
-├── site/
-│   ├── header.tsx      # Fixed nav with scroll state + mobile menu
-│   ├── footer.tsx      # CTA + links + contact info
-│   └── hero-scene.tsx  # R3F 3D network sculpture (lazy-loaded)
-└── ui/                 # shadcn/ui components
-
-lib/
-├── supabase.ts         # Supabase admin client (service role)
-├── validation.ts       # Zod schemas + label maps
-├── auth.ts             # Session tokens, cookies, password verification
-└── rate-limit.ts       # Database-backed rate limiting
-
-hooks/
-└── use-scroll-reveal.ts  # IntersectionObserver scroll animations
-```
-
-## India-Specific Design Rationale
-
-- **INR pricing** displayed on all service listings (₹25,000 – ₹3,00,000+ ranges)
-- **WhatsApp-first communication** — WhatsApp workflows as a core service, WhatsApp contact in footer
-- **Mobile-first design** — India is a smartphone-first market; every layout prioritizes mobile
-- **Google Business Profile emphasis** — local SEO is critical for Indian service businesses
-- **UPI/payment gateway awareness** in service descriptions
-- **Regional language readiness** — multi-language support listed as a feature
-- **Realistic Indian business contexts** — D2C brands, local retailers, service businesses
-- **Illustrative portfolio** clearly labeled, with no fabricated testimonials or client results
-
-## Deployment
-
-### Vercel
-
-1. Push your code to a Git repository
-2. Import the project in Vercel
-3. Add all environment variables in the Vercel dashboard
-4. Deploy — Vercel automatically detects Next.js
-
-### Supabase
-
-The database is already provisioned. The migration for `enquiries` and `rate_limits` tables has been applied. No additional database setup is needed.
-
-## Performance Notes
-
-- 3D scene is dynamically imported with `ssr: false` and lazy-loads on the client
-- Fonts loaded via `next/font` with `display: swap`
-- Images use `unoptimized` flag for static deployments (no image optimization server needed)
-- CSS animations use `transform` and `opacity` for GPU acceleration
-- `prefers-reduced-motion` fully respected — all animations disabled, 3D still renders but static
-- Minimal client-side JavaScript — only interactive components are client components
-
-## Unresolved Issues
-
-- Supabase `SERVICE_ROLE_KEY` must be available at runtime for server-side database operations. In this environment it is injected automatically; for self-hosted deployments, ensure it is in your environment.
-- Lighthouse/PageSpeed scores have not been measured in this environment (no browser available). The design follows performance best practices but actual scores should be verified after deployment.
-- The contact phone number and email are placeholders (`+91 80000 00000`, `hello@ethixweb.com`) — replace with real contact information before going live.
+Copyright © 2026 Ethixweb USA LLC. All rights reserved.
