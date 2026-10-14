@@ -203,15 +203,15 @@ export function IndiaMap() {
             <defs>
               {/* Crimson gradient line */}
               <linearGradient id="crimsonTrace" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FF4D5A" stopOpacity="0.9" />
-                <stop offset="50%" stopColor="#E11D2E" stopOpacity="0.75" />
-                <stop offset="100%" stopColor="#991B1B" stopOpacity="0.35" />
+                <stop offset="0%" stopColor="#FF4D5A" stopOpacity="0.95" />
+                <stop offset="50%" stopColor="#E11D2E" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#B91C1C" stopOpacity="0.65" />
               </linearGradient>
 
               {/* International outbound arc gradient */}
               <linearGradient id="globalArcGrad" x1="50%" y1="50%" x2="0%" y2="0%">
-                <stop offset="0%" stopColor="#FF4D5A" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#E11D2E" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="#FF4D5A" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="#E11D2E" stopOpacity="0.25" />
               </linearGradient>
 
               {/* Glowing dot filter */}
@@ -222,6 +222,115 @@ export function IndiaMap() {
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
+
+              {/* Pill shadow filter */}
+              <filter id="pillShadow" x="-15%" y="-30%" width="130%" height="170%">
+                <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#000000" floodOpacity="0.16" />
+              </filter>
+
+              <style>{`
+                .india-state-inactive {
+                  fill: #e4eaf1;
+                  stroke: #8fa0b5;
+                  stroke-width: 0.85px;
+                }
+                .india-state-inactive:hover {
+                  fill: #d3deec;
+                }
+                .dark .india-state-inactive {
+                  fill: rgba(255, 255, 255, 0.03);
+                  stroke: rgba(255, 255, 255, 0.13);
+                  stroke-width: 0.55px;
+                }
+                .dark .india-state-inactive:hover {
+                  fill: rgba(255, 255, 255, 0.08);
+                }
+
+                .india-state-active {
+                  fill: rgba(225, 29, 46, 0.16);
+                  stroke: #dc2626;
+                  stroke-width: 1.25px;
+                }
+                .dark .india-state-active {
+                  fill: rgba(225, 29, 46, 0.09);
+                  stroke: rgba(225, 29, 46, 0.45);
+                  stroke-width: 0.9px;
+                }
+
+                .india-state-selected {
+                  fill: rgba(225, 29, 46, 0.25);
+                  stroke: #dc2626;
+                  stroke-width: 1.6px;
+                }
+                .dark .india-state-selected {
+                  fill: rgba(225, 29, 46, 0.2);
+                  stroke: rgba(225, 29, 46, 0.85);
+                  stroke-width: 1.2px;
+                }
+
+                .india-state-hovered {
+                  fill: rgba(225, 29, 46, 0.34) !important;
+                  stroke: #dc2626 !important;
+                  stroke-width: 2px !important;
+                }
+                .dark .india-state-hovered {
+                  fill: rgba(225, 29, 46, 0.32) !important;
+                  stroke: #ff4d5a !important;
+                  stroke-width: 1.6px !important;
+                }
+
+                .india-corridor {
+                  stroke-opacity: 0.85;
+                }
+                .dark .india-corridor {
+                  stroke-opacity: 0.45;
+                }
+
+                .hub-pill-bg {
+                  fill: #ffffff;
+                  stroke: rgba(15, 23, 42, 0.25);
+                  stroke-width: 0.8px;
+                }
+                .dark .hub-pill-bg {
+                  fill: #121216;
+                  stroke: rgba(255, 255, 255, 0.2);
+                  stroke-width: 0.6px;
+                }
+
+                .hub-pill-bg-selected {
+                  fill: #dc2626;
+                  stroke: #b91c1c;
+                  stroke-width: 1.2px;
+                }
+                .dark .hub-pill-bg-selected {
+                  fill: #1a0f12;
+                  stroke: #ff4d5a;
+                  stroke-width: 1.2px;
+                }
+
+                .hub-pill-text {
+                  fill: #0f172a;
+                }
+                .dark .hub-pill-text {
+                  fill: #e0e0e6;
+                }
+
+                .hub-pill-text-selected {
+                  fill: #ffffff;
+                }
+                .dark .hub-pill-text-selected {
+                  fill: #ffffff;
+                }
+
+                .corridor-reverse-dot {
+                  fill: #0f172a;
+                  opacity: 0.8;
+                }
+                .dark .corridor-reverse-dot {
+                  fill: #ffffff;
+                  opacity: 0.85;
+                }
+              `}</style>
             </defs>
 
             {/* Outbound Global Wave Arcs */}
@@ -232,7 +341,7 @@ export function IndiaMap() {
                   stroke="url(#globalArcGrad)"
                   strokeWidth="1.5"
                   strokeDasharray="4 6"
-                  className="opacity-40 animate-pulse"
+                  className="opacity-70 dark:opacity-40 animate-pulse"
                 />
                 <circle r="2.5" fill="#FF4D5A" filter="url(#glowFilter)">
                   <animateMotion
@@ -245,37 +354,26 @@ export function IndiaMap() {
             ))}
 
             {/* Authentic Geographic States of India from @svg-maps/india */}
-            <g id="india-states-group">
+            <g id="india-states-group" className="drop-shadow-sm dark:drop-shadow-none">
               {indiaMapData.locations.map((loc) => {
                 const isActiveState = ACTIVE_STATE_NAMES.includes(loc.name);
                 const isHovered = hoveredState === loc.name;
                 const isHubActive = activeHub?.stateName === loc.name;
+
+                const stateClass = isHovered
+                  ? 'india-state-hovered'
+                  : isHubActive
+                  ? 'india-state-selected'
+                  : isActiveState
+                  ? 'india-state-active'
+                  : 'india-state-inactive';
 
                 return (
                   <path
                     key={loc.id}
                     id={loc.id}
                     d={loc.path}
-                    fill={
-                      isHovered
-                        ? 'rgba(225, 29, 46, 0.32)'
-                        : isHubActive
-                        ? 'rgba(225, 29, 46, 0.2)'
-                        : isActiveState
-                        ? 'rgba(225, 29, 46, 0.08)'
-                        : 'rgba(255, 255, 255, 0.025)'
-                    }
-                    stroke={
-                      isHovered
-                        ? '#FF4D5A'
-                        : isHubActive
-                        ? 'rgba(225, 29, 46, 0.8)'
-                        : isActiveState
-                        ? 'rgba(225, 29, 46, 0.38)'
-                        : 'rgba(255, 255, 255, 0.12)'
-                    }
-                    strokeWidth={isHovered ? 1.6 : isHubActive ? 1.2 : isActiveState ? 0.9 : 0.55}
-                    className="transition-colors duration-200 cursor-pointer"
+                    className={`transition-colors duration-200 cursor-pointer ${stateClass}`}
                     onMouseEnter={() => setHoveredState(loc.name)}
                     onMouseLeave={() => setHoveredState(null)}
                   >
@@ -292,8 +390,8 @@ export function IndiaMap() {
                 <path
                   d={c.path}
                   stroke="url(#crimsonTrace)"
-                  strokeWidth="1.6"
-                  strokeOpacity="0.45"
+                  strokeWidth="1.8"
+                  className="india-corridor"
                   strokeLinecap="round"
                 />
 
@@ -308,7 +406,7 @@ export function IndiaMap() {
 
                 {/* Secondary reverse flow dot on main pipelines */}
                 {i % 2 === 0 && (
-                  <circle r="2.2" fill="#FFFFFF" opacity="0.85">
+                  <circle r="2.2" className="corridor-reverse-dot">
                     <animateMotion
                       path={c.path}
                       dur={`${3.2 + (i % 2) * 0.7}s`}
@@ -345,8 +443,8 @@ export function IndiaMap() {
                     r={isSelected ? 18 : 12}
                     fill="none"
                     stroke="#E11D2E"
-                    strokeWidth="1"
-                    className="animate-ping opacity-35"
+                    strokeWidth="1.2"
+                    className="animate-ping opacity-50 dark:opacity-35"
                     style={{ animationDuration: hub.isHQ ? '2s' : '3s' }}
                   />
 
@@ -375,6 +473,7 @@ export function IndiaMap() {
                   <g
                     transform={`translate(${hub.x + 8}, ${hub.y - 10})`}
                     className="pointer-events-none transition-opacity duration-200"
+                    filter="url(#pillShadow)"
                   >
                     <rect
                       x="0"
@@ -382,19 +481,16 @@ export function IndiaMap() {
                       width={hub.name.length * 6.6 + 18}
                       height="17"
                       rx="8.5"
-                      fill="#121216"
-                      fillOpacity="0.88"
-                      stroke={isSelected ? '#FF4D5A' : 'rgba(255,255,255,0.18)'}
-                      strokeWidth={isSelected ? '1.2' : '0.6'}
+                      className={isSelected ? 'hub-pill-bg-selected' : 'hub-pill-bg'}
                     />
-                    <circle cx="6" cy="8.5" r="2.2" fill={isSelected ? '#FF4D5A' : '#E11D2E'} />
+                    <circle cx="6" cy="8.5" r="2.2" fill={isSelected ? '#FFFFFF' : '#E11D2E'} />
                     <text
                       x="12"
                       y="11.5"
-                      fill={isSelected ? '#FFFFFF' : '#E0E0E6'}
+                      className={isSelected ? 'hub-pill-text-selected' : 'hub-pill-text'}
                       fontSize="8.5"
                       fontFamily="system-ui, -apple-system, sans-serif"
-                      fontWeight={isSelected ? '700' : '500'}
+                      fontWeight={isSelected ? '700' : '600'}
                       letterSpacing="0.2px"
                     >
                       {hub.name}
@@ -447,7 +543,7 @@ export function IndiaMap() {
           <div className="flex items-center gap-3">
             <div className="rounded-xl border border-line-subtle bg-surface-secondary/70 px-3 py-1.5 text-right">
               <span className="block text-[10px] uppercase tracking-wider text-content-faint">Live Status</span>
-              <span className="font-mono text-xs font-semibold text-emerald-400">
+              <span className="font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                 ● {activeHub.status}
               </span>
             </div>
