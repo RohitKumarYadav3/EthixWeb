@@ -115,8 +115,15 @@ function FooterNetworkAnimation() {
     }
 
     let lastTime = performance.now();
+    let isVisible = false;
+    let isRunning = false;
 
     const render = (time: number) => {
+      if (!isVisible) {
+        isRunning = false;
+        return;
+      }
+
       const delta = (time - lastTime) / 1000;
       lastTime = time;
 
@@ -216,10 +223,36 @@ function FooterNetworkAnimation() {
       animationFrameId = requestAnimationFrame(render);
     };
 
-    animationFrameId = requestAnimationFrame(render);
+    const startAnimation = () => {
+      if (!isRunning && isVisible) {
+        isRunning = true;
+        lastTime = performance.now();
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+
+    const stopAnimation = () => {
+      isRunning = false;
+      cancelAnimationFrame(animationFrameId);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isVisible = entries[0]?.isIntersecting ?? false;
+        if (isVisible) {
+          startAnimation();
+        } else {
+          stopAnimation();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+
+    observer.observe(canvas);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+      stopAnimation();
       window.removeEventListener('resize', handleResize);
       if (parent) {
         parent.removeEventListener('mousemove', handleMouseMove);

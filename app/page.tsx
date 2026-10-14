@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import {
@@ -12,14 +13,25 @@ import { useScrollReveal } from '@/hooks/use-scroll-reveal';
 import { SiteHeader } from '@/components/site/header';
 import { SiteFooter } from '@/components/site/footer';
 import { serviceCategories } from '@/lib/services-data';
-import { OperationsNetwork } from '@/components/site/operations-network';
-import { ClientReviews } from '@/components/site/client-reviews';
-import { TechEcosystemMarquee } from '@/components/site/tech-ecosystem-marquee';
 import { HeroFloatingTags } from '@/components/site/hero-floating-tags';
-
 const HeroScene = dynamic(() => import('@/components/site/hero-scene').then(m => m.HeroScene), {
   ssr: false,
   loading: () => null,
+});
+
+const OperationsNetwork = dynamic(() => import('@/components/site/operations-network').then(m => m.OperationsNetwork), {
+  ssr: true,
+  loading: () => <div className="min-h-[500px]" />,
+});
+
+const ClientReviews = dynamic(() => import('@/components/site/client-reviews').then(m => m.ClientReviews), {
+  ssr: true,
+  loading: () => <div className="min-h-[300px]" />,
+});
+
+const TechEcosystemMarquee = dynamic(() => import('@/components/site/tech-ecosystem-marquee').then(m => m.TechEcosystemMarquee), {
+  ssr: true,
+  loading: () => <div className="min-h-[100px]" />,
 });
 
 const solutions: { icon: LucideIcon; title: string; desc: string; href: string }[] = [
@@ -72,6 +84,24 @@ const processSteps = [
 
 export default function HomePage() {
   useScrollReveal();
+  const [mount3D, setMount3D] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 768) return;
+      if ('requestIdleCallback' in window) {
+        const win = window as unknown as {
+          requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number;
+          cancelIdleCallback: (id: number) => void;
+        };
+        const id = win.requestIdleCallback(() => setMount3D(true), { timeout: 1000 });
+        return () => win.cancelIdleCallback(id);
+      } else {
+        const timer = setTimeout(() => setMount3D(true), 250);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-surface text-content">
@@ -85,7 +115,7 @@ export default function HomePage() {
         <div className="absolute left-0 bottom-0 h-[300px] w-[400px] rounded-full bg-crimson/4 blur-[120px]" />
 
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <HeroScene />
+          {mount3D && <HeroScene />}
         </div>
 
         <div className="absolute inset-y-0 left-0 z-10 w-full bg-gradient-to-r from-surface via-surface/75 to-transparent md:w-[68%] lg:w-[55%]" />
@@ -93,36 +123,24 @@ export default function HomePage() {
 
         <div className="relative z-20 mx-auto w-full max-w-7xl px-6 pt-24 pb-16 lg:px-10 md:pt-28">
           <div className="max-w-2xl">
-            <div
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-line-subtle bg-content/5 px-4 py-2 type-eyebrow text-content-secondary backdrop-blur-sm"
-              style={{ animation: 'fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards' }}
-            >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-line-subtle bg-content/5 px-4 py-2 type-eyebrow text-content-secondary backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-crimson animate-glow" />
               Premium digital operations team
             </div>
 
-            <h1
-              className="font-display type-hero text-content text-balance"
-              style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards' }}
-            >
+            <h1 className="font-display type-hero text-content text-balance">
               We run the<br />
               <span className="text-crimson">tech.</span><br />
               You run the<br />
               <span className="text-crimson">business.</span>
             </h1>
 
-            <p
-              className="mt-7 max-w-xl type-body-lg text-content-muted text-pretty"
-              style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s forwards' }}
-            >
+            <p className="mt-7 max-w-xl type-body-lg text-content-muted text-pretty">
               We connect websites, AI automation, marketing, and business
               systems to help businesses attract leads and grow.
             </p>
 
-            <div
-              className="mt-8 flex flex-col gap-4 sm:flex-row"
-              style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards' }}
-            >
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
                 href="/contact"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-crimson px-7 py-3.5 type-btn text-white transition-all duration-300 hover:bg-crimson-dark hover:shadow-2xl hover:shadow-crimson/40"
